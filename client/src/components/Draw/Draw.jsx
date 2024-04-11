@@ -1,12 +1,14 @@
 import React, { useState, useRef } from "react";
 import { MapContainer, TileLayer, FeatureGroup, GeoJSON } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
+import L from "leaflet";
 
 const Draw = () => {
     const [center, setCenter] = useState({ lat: 54.35135425936058, lng: 48.38624596595764 });
     const [mapLayers, setMapLayers] = useState([]);
     const [geoJSON, setGeoJSON] = useState(null);
     const mapRef = useRef();
+    const drawnItemsRef = useRef();
 
     const ZOOM_LEVEL = 12;
     const mapStyle = {
@@ -90,6 +92,14 @@ const Draw = () => {
             console.log(data); // Проверим, что данные правильно загружены
 
             setGeoJSON(data);
+
+            // При загрузке объектов из файла GeoJSON добавляем их в слой
+            drawnItemsRef.current.clearLayers(); // Очищаем слой перед добавлением новых объектов
+            L.geoJSON(data, {
+                onEachFeature: (feature, layer) => {
+                    drawnItemsRef.current.addLayer(layer); // Добавляем каждый объект в слой
+                }
+            });
         };
 
         reader.readAsText(file);
@@ -99,8 +109,8 @@ const Draw = () => {
         <>
             <div className="row">
                 <div className="col">
-                    <MapContainer center={center} zoom={ZOOM_LEVEL} ref={mapRef} style={mapStyle}>
-                        <FeatureGroup>
+                    <MapContainer center={center} zoom={ZOOM_LEVEL} ref={mapRef} style={mapStyle} attributionControl={false}>
+                        <FeatureGroup ref={drawnItemsRef}>
                             <EditControl
                                 position="topright"
                                 onCreated={_onCreate}
@@ -131,6 +141,23 @@ const Draw = () => {
 
                     <button onClick={saveGeoJSON}>Сохранить</button>
                     <input type="file" onChange={handleFileChange} />
+
+                    {/* Вывод информации о слоях */}
+                    <div>
+                        <h2>Информация о слоях:</h2>
+                        <ul>
+                            {mapLayers.map(layer => (
+                                <li key={layer.id}>
+                                    Слой ID: {layer.id}
+                                    <ul>
+                                        {layer.latlngs.map((latlng, index) => (
+                                            <li key={index}>Объект {index + 1}: (Широта: {latlng.lat}, Долгота: {latlng.lng})</li>
+                                        ))}
+                                    </ul>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </>

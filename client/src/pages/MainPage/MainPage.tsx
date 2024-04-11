@@ -1,5 +1,6 @@
 import React from 'react';
 import Draw from '@components/Draw/Draw';
+import Example from '@components/example/Example';
 
 
 
@@ -9,7 +10,7 @@ const zoom = 13;
 const MapPage = () => {
 
     return (
-        <Draw />
+        <Example />
     )
 }
 
