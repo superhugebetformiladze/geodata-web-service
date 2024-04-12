@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { MapContainer, TileLayer, FeatureGroup, GeoJSON } from "react-leaflet";
+import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
+import { saveGeoJSON } from "@api/geoObject/saveGeoObject";
 import L from "leaflet";
 
 const Example = () => {
@@ -34,30 +35,20 @@ const Example = () => {
     };
 
     const downloadGeoJSON = () => {
-        const geoJSONData = {
-            type: "FeatureCollection",
-            features: drawnItems.map(item => {
-                let geometry;
-                if (item.type === 'polygon') {
-                    geometry = {
-                        type: "Polygon",
-                        coordinates: [item.coordinates.map(coord => [coord.lat, coord.lng])]
-                    };
-                } else if (item.type === 'marker') {
-                    geometry = {
-                        type: "Point",
-                        coordinates: [item.coordinates.lat, item.coordinates.lng]
-                    };
+        const geojson = {
+            type: 'FeatureCollection',
+            features: drawnItems.map(layer => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [layer.latlngs.map(coord => [coord.lng, coord.lat])]
+                },
+                properties: {
                 }
-                return {
-                    type: "Feature",
-                    geometry,
-                    properties: {}
-                };
-            })
+            }))
         };
 
-        const jsonData = JSON.stringify(geoJSONData, null, 2);
+        const jsonData = JSON.stringify(geojson, null, 2);
         const blob = new Blob([jsonData], { type: "application/json" });
         const url = URL.createObjectURL(blob);
 
@@ -68,6 +59,23 @@ const Example = () => {
         link.click();
         document.body.removeChild(link);
     };
+
+    const handleSaveDrawnItems = () => {
+        const geojson = {
+            type: 'FeatureCollection',
+            features: mapLayers.map(layer => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [layer.latlngs.map(coord => [coord.lng, coord.lat])]
+                },
+                properties: {
+                }
+            }))
+        };
+      
+        saveGeoJSON(geojson);
+      };
 
     return (
         <>
@@ -99,7 +107,7 @@ const Example = () => {
                 </div>
             </div>
             <button onClick={printDrawnItems}>Print Drawn Items</button>
-            <button onClick={downloadGeoJSON}>Download GeoJSON</button>
+            <button onClick={downloadGeoJSON}>Сохранить</button>
         </>
     );
 };

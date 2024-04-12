@@ -1,3 +1,4 @@
 from django.db import models
 
-# Create your models here.
+class GeoObject(models.Model):
+    object_data = models.JSONField()

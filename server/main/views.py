@@ -1,18 +1,16 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import serializers
-import requests
+from rest_framework import status
+from .serializers import GeoObjectSerializer
 
-class PlaceSerializer(serializers.Serializer):
-    display_name = serializers.CharField()
-    lat = serializers.CharField()
-    lon = serializers.CharField()
-
-@api_view(['GET'])
-def search_places(request):
-    query = request.GET.get('query')
-    url = f'https://nominatim.openstreetmap.org/search?q={query}&format=json'
-    response = requests.get(url)
-    data = response.json()
-    serializer = PlaceSerializer(data, many=True)
-    return Response(serializer.data)
+@api_view(['POST'])
+def save_geojson(request):
+    if request.method == 'POST':
+        print("request_______________________: ", request.data, "\n\n\n")
+        serializer = GeoObjectSerializer(data=request.data)
+        print("serializer_______________________: ", serializer, "\n\n\n")
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'GeoJSON data saved successfully.'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'error': 'Invalid request method.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

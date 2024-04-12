@@ -2,5 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('search-places/', views.search_places, name='search_places'),
+    path('api/save_geojson/', views.save_geojson, name='save_geojson'),
 ]
