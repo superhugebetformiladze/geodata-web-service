@@ -76,10 +76,13 @@ const Header: React.FC = () => {
           >
             <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
               <li className="text-gray-600 hover:text-blue-600">
-                <Link to={'/'} onClick={closeNavbar}>Home</Link>
+                <Link to={'/'} onClick={closeNavbar}>Главная</Link>
               </li>
               <li className="text-gray-600 hover:text-blue-600">
                 <Link to={'/map'} onClick={closeNavbar}>Карта</Link>
+              </li>
+              <li className="text-gray-600 hover:text-blue-600">
+                <Link to={'/login'} onClick={closeNavbar}>Вход</Link>
               </li>
             </ul>
           </div>
