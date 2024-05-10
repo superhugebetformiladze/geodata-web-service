@@ -1,14 +1,17 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenRefreshView
-from rest_framework_simplejwt.views import TokenBlacklistView
 from . import views
-from .views import RegisterView, MyTokenObtainPairView
+from .views import (RegisterAPIView, LoginAPIView, UserAPIView, RefreshAPIView, LogoutAPIView, 
+                    CreateProjectAPIView, UserProjectsAPIView, ProjectDetailAPIView)
 
 urlpatterns = [
-    path('api/save_geojson/', views.save_geojson, name='save_geojson'),
-    path('api/get_geojson/', views.get_geojson, name='get_geojson'),
-    path('api/login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/logout/', TokenBlacklistView.as_view(), name='token_blacklist'),
-    path('api/register/', RegisterView.as_view(), name='register'),
+    path('save_geojson/', views.save_geojson, name='save_geojson'),
+    path('get_geojson/', views.get_geojson, name='get_geojson'),
+    path('register', RegisterAPIView.as_view()),
+    path('login', LoginAPIView.as_view()),
+    path('user', UserAPIView.as_view()),
+    path('refresh', RefreshAPIView.as_view()),
+    path('logout', LogoutAPIView.as_view()),
+    path('projects/create', CreateProjectAPIView.as_view(), name='create_project'),
+    path('projects', UserProjectsAPIView.as_view(), name='user_projects'),
+    path('projects/<int:project_id>', ProjectDetailAPIView.as_view(), name='project_detail'),
 ]

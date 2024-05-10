@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { registerUser } from '@api/auth/registerApi';
+import React, { useState, useEffect } from 'react';
+import { loginUser } from '@api/auth/loginApi';
 import { IUser } from '@models/UserModel';
-import {Navigate} from 'react-router-dom';
+import {Navigate} from "react-router-dom";
 
 
-const RegisterForm = () => {
+const LoginForm = () => {
 
     const [formData, setFormData] = useState<IUser>({
         id: 0,
@@ -12,26 +12,30 @@ const RegisterForm = () => {
         email: '',
         password: '',
     });
+
     const [navigate, setNavigate] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
-            await registerUser(formData);
+            await loginUser(formData);
         } catch (error) {
-            console.error('Error registering:', error);
+            console.error('Error login:', error);
         }
 
         setNavigate(true);
     };
 
     if (navigate) {
-        return <Navigate to="/login"/>;
+        return <Navigate to="/profile"/>;
     }
 
     return (
@@ -44,7 +48,7 @@ const RegisterForm = () => {
                     <input
                         id="email"
                         name="email"
-                        type="email"
+                        type="text"
                         required
                         value={formData.email}
                         onChange={handleChange}
@@ -58,11 +62,6 @@ const RegisterForm = () => {
                     <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                         Пароль
                     </label>
-                    {/* <div className="text-sm">
-                                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                        Забыли пароль?
-                                    </a>
-                                </div> */}
                 </div>
                 <div className="mt-2">
                     <input
@@ -78,32 +77,15 @@ const RegisterForm = () => {
             </div>
 
             <div>
-                <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
-                    Имя пользователя
-                </label>
-                <div className="mt-2">
-                    <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        required
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                </div>
-            </div>
-
-            <div>
                 <button
                     type="submit"
                     className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                    Зарегистрироваться
+                    Войти
                 </button>
             </div>
         </form>
     );
 };
 
-export default RegisterForm;
+export default LoginForm;
