@@ -26,7 +26,7 @@ class UserSerializer(ModelSerializer):
         return instance
     
 class ProjectSerializer(serializers.ModelSerializer):
-    geo_object = GeoObjectSerializer()
+    # geo_object = GeoObjectSerializer()
 
     class Meta:
         model = Project

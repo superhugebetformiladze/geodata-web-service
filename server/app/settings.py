@@ -90,7 +90,7 @@ CORS_ALLOW_CREDENTIALS = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'geo_data_1',
+        'NAME': 'geo_data',
         'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': 'localhost',

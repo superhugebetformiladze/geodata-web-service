@@ -118,11 +118,20 @@ class CreateProjectAPIView(APIView):
             user_id = decode_access_token(token)
 
             request.data['user'] = user_id  # добавляем идентификатор пользователя к данным проекта
+
+            # Создание пустого гео-объекта
+            geo_object = GeoObject.objects.create(object_data={})
+            request.data['geo_object'] = geo_object.id
+
             serializer = ProjectSerializer(data=request.data)
+            print("\n\ndata:\n", request.data, "\n\n")
+            print("\n\nserializer:\n", serializer, "\n\n")
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=201)
-            return Response(serializer.errors, status=400)
+            else:
+                print("\n\nserializer errors:\n", serializer.errors, "\n\n")
+                return Response(serializer.errors, status=400)
 
         raise AuthenticationFailed('unauthenticated')
 
