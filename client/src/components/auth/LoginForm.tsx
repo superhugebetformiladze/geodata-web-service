@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { loginUser } from '@api/auth/loginApi';
 import { IUser } from '@models/UserModel';
 import {Navigate} from "react-router-dom";

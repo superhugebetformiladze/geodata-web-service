@@ -136,6 +136,12 @@ class CreateProjectAPIView(APIView):
         raise AuthenticationFailed('unauthenticated')
 
 class ProjectDetailAPIView(APIView):
+    def get_object(self, project_id, user_id):
+        try:
+            return Project.objects.get(pk=project_id, user_id=user_id)
+        except Project.DoesNotExist:
+            raise NotFound('Project not found')
+
     def get(self, request, project_id):
         auth = get_authorization_header(request).split()
 
@@ -143,11 +149,37 @@ class ProjectDetailAPIView(APIView):
             token = auth[1].decode('utf-8')
             user_id = decode_access_token(token)
 
-            try:
-                project = Project.objects.get(pk=project_id, user_id=user_id)
-                serializer = ProjectSerializer(project)
-                return Response(serializer.data)
-            except Project.DoesNotExist:
-                raise NotFound('Project not found')
+            project = self.get_object(project_id, user_id)
+            serializer = ProjectSerializer(project)
+            return Response(serializer.data)
+        raise AuthenticationFailed('unauthenticated')
 
+    def put(self, request, project_id):
+        auth = get_authorization_header(request).split()
+
+        if auth and len(auth) == 2:
+            token = auth[1].decode('utf-8')
+            user_id = decode_access_token(token)
+
+            project = self.get_object(project_id, user_id)
+            serializer = ProjectSerializer(project, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        raise AuthenticationFailed('unauthenticated')
+
+    def delete(self, request, project_id):
+        auth = get_authorization_header(request).split()
+
+        if auth and len(auth) == 2:
+            token = auth[1].decode('utf-8')
+            user_id = decode_access_token(token)
+
+            project = self.get_object(project_id, user_id)
+            geo_object = project.geo_object
+            if geo_object:  # Проверяем, что связанный гео-объект существует
+                geo_object.delete()  # Удаляем связанный гео-объект
+            project.delete()  # Удаляем проект
+            return Response(status=status.HTTP_204_NO_CONTENT)
         raise AuthenticationFailed('unauthenticated')
