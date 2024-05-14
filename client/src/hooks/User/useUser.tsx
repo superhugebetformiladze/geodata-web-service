@@ -1,27 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { fetchUser } from '@api/user/userApi';
 import { IUser } from '@models/UserModel';
 
 
 const useUser = (onError: () => void) => {
-    const [user, setUser] = useState<IUser | null>(null);
+    console.log("мама я в телике")
+    const [user, setUser] = useState<IUser>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const userData = await fetchUser();
-                console.log("hook-2: ", userData)
-                setUser(userData);
-            } catch (error) {
-                console.error('Error getting user data:', error);
+    const fetchData = useCallback(async () => {
+        console.log("жопа")
+        try {
+            console.log("а я тут")
+            const { data, status } = await fetchUser();
+            if (status === 403) {
                 onError();
             }
-        };
-
-        fetchData();
+            else {
+                setUser(data);
+            }
+        } catch (error) {
+            console.error('Error setting user:', error);
+        }
     }, [onError]);
 
-    console.log("hook: ", user)
+    useEffect(() => {
+        fetchData();
+    }, []);
+
     return user;
 };
 

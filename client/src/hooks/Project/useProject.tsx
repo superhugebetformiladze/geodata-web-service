@@ -1,22 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchProjectById } from '@api/projects/fetchProjectById';
 import { IProject } from '@models/ProjectModel';
 
-const useProject = (projectId: number) => {
+const useProject = (projectId: number, onError: () => void) => {
   const [project, setProject] = useState<IProject>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const projectsData = await fetchProjectById(projectId);
-        setProject(projectsData);
-      } catch (error) {
-        console.error('Error setting project:', error);
+  const fetchData = useCallback(async () => {
+    try {
+      const { data, status } = await fetchProjectById(projectId);
+      if (status === 403) {
+        onError();
       }
-    };
+      else {
+        setProject(data);
+      }
+    } catch (error) {
+      console.error('Error setting project:', error);
+    }
+  }, [onError]);
 
+  useEffect(() => {
     fetchData();
-  }, [projectId]);
+  }, []);
 
   return project;
 };

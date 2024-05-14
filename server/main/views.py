@@ -160,13 +160,28 @@ class ProjectDetailAPIView(APIView):
         if auth and len(auth) == 2:
             token = auth[1].decode('utf-8')
             user_id = decode_access_token(token)
+            
 
             project = self.get_object(project_id, user_id)
+
+            geo_object_id = project.geo_object.id
+            print("\nproject.geo_object:\n", project.geo_object.id, "\n\n")
+            print("\nproject.pk:\n", project.pk, "\n\n")
+            print("\nproject.user:\n", project.user, "\n\n")
+            print("\nproject.name:\n", project.name, "\n\n")
+
+            request.data['user'] = user_id
+            request.data['geo_object'] = geo_object_id
+
             serializer = ProjectSerializer(project, data=request.data)
+            print("\n\nuser:\n", user_id, "\n\n")
+            print("\n\nserializer data:\n", serializer, "\n\n")
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                print("\n\nserializer errors:\n", serializer.errors, "\n\n")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         raise AuthenticationFailed('unauthenticated')
 
     def delete(self, request, project_id):
@@ -178,8 +193,8 @@ class ProjectDetailAPIView(APIView):
 
             project = self.get_object(project_id, user_id)
             geo_object = project.geo_object
-            if geo_object:  # Проверяем, что связанный гео-объект существует
-                geo_object.delete()  # Удаляем связанный гео-объект
-            project.delete()  # Удаляем проект
+            if geo_object:
+                geo_object.delete()
+            project.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         raise AuthenticationFailed('unauthenticated')

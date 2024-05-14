@@ -6,8 +6,6 @@ export const loginUser = async (userData: any) => {
         const response = await axios.post('login', userData, {withCredentials: true});
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data['token']}`;
-
-        console.log("login api:", response)
     } catch (error) {
         console.error('Error login:', error);
         throw error;

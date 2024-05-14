@@ -1,19 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { fetchProjects } from '@api/projects/fetchProjects';
 
-const useProjects = () => {
+const useProjects = (onError: () => void) => {
   const [projects, setProjects] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const projectsData = await fetchProjects();
-        setProjects(projectsData);
-      } catch (error) {
-        console.error('Error setting projects:', error);
+  const fetchData = useCallback(async () => {
+    try {
+      const { data, status } = await fetchProjects();
+      if (status === 403) {
+        onError();
       }
-    };
+      else {
+        setProjects(data);
+      }
+    } catch (error) {
+      console.error('Error setting projects:', error);
+    }
+  }, [onError]);
 
+  useEffect(() => {
     fetchData();
   }, []);
 
