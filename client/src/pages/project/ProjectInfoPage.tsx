@@ -14,8 +14,17 @@ const ProjectInfoPage: React.FC = () => {
     const onError = () => {
         setNavigate(true);
     }
-    const project = useProject(Number(projectId), onError);
+
+    const { project, geoObject } = useProject(Number(projectId), onError);
+
+    console.log("project: ", project)
+    console.log("geoObject: ", geoObject)
+
     const [geoObjectData, setGeoObjectData] = useState();
+
+    const handleGeoJsonData = (geoJsonData: any) => {
+        setGeoObjectData(geoJsonData);
+    };
 
     const handleDelete = async () => {
         try {
@@ -32,8 +41,6 @@ const ProjectInfoPage: React.FC = () => {
             if (project && geoObjectData) {
                 const geoObjectId = project.geo_object;
 
-                console.log("данные со страницы: ", geoObjectId, geoObjectData)
-
                 await saveGeoObject(geoObjectId, geoObjectData);
             } else {
                 console.error('Project or geoJsonData is missing.');
@@ -44,9 +51,7 @@ const ProjectInfoPage: React.FC = () => {
         }
     };
 
-    const handleGeoJsonData = (geoJsonData: any) => {
-        setGeoObjectData(geoJsonData);
-    };
+
 
     if (navigate) {
         return <Navigate to="/projects" />;

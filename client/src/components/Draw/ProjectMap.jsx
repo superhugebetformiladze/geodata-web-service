@@ -60,19 +60,16 @@ const ProjectMap = ({ onGeoJsonData }) => {
 
     const updateGeoJsonData = () => {
         const geojson = {
-            object_data: {
-                type: 'FeatureCollection',
-                features: mapLayers.map(layer => ({
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Polygon',
-                        coordinates: [layer.latlngs.map(coord => [coord.lng, coord.lat])]
-                    },
-                    properties: {}
-                }))
-            }
+            type: 'FeatureCollection',
+            features: mapLayers.map(layer => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [layer.latlngs.map(coord => [coord.lng, coord.lat])]
+                },
+                properties: {}
+            }))
         };
-        setGeoJsonData(geojson);
         onGeoJsonData(geojson);
     };
 

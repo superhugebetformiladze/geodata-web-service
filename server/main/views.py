@@ -184,7 +184,7 @@ class PostGeoObjectAPIView(APIView):
             geo_data = request.data.get('geo_data')
 
             try:
-                geo_object = GeoObject.objects.get(id=geo_id)
+                geo_object = GeoObject.objects.get(pk=geo_id)
             except GeoObject.DoesNotExist:
                 return Response({'error': 'GeoObject not found'}, status=404)
 
@@ -205,28 +205,21 @@ class PostGeoObjectAPIView(APIView):
         raise AuthenticationFailed('unauthenticated')
     
 class GetGeoObjectAPIView(APIView):
-    def get(self, request):
+    def get_object(self, geo_object_id):
+        try:
+            return GeoObject.objects.get(pk=geo_object_id)
+        except GeoObject.DoesNotExist:
+            raise NotFound('GeoObject not found')
+        
+    def get(self, request, geo_object_id):
         auth = get_authorization_header(request).split()
 
         if auth and len(auth) == 2:
-
-            geo_id = request.data.get('id')
-
-            try:
-                geo_object = GeoObject.objects.get(id=geo_id)
-            except GeoObject.DoesNotExist:
-                return Response({'error': 'GeoObject not found'}, status=404)
-
-            print("\n\nrequest data:\n", request.data, "\n\n")
+            
+            geo_object = self.get_object(geo_object_id)
+            print("\n\ngeo_object:\n", geo_object.object_data, "\n\n")
 
             serializer = GeoObjectSerializer(geo_object)
-    
-            print("\n\nserializer:\n", serializer, "\n\n")
-            
-            if serializer.is_valid():
-                return Response(serializer.data, status=201)
-            else:
-                print("\n\nserializer errors:\n", serializer.errors, "\n\n")
-                return Response(serializer.errors, status=400)
-
+            print("\n\nserializer:\n", serializer.data, "\n\n")
+            return Response(serializer.data)
         raise AuthenticationFailed('unauthenticated')

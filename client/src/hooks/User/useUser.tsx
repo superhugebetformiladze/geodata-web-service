@@ -4,13 +4,10 @@ import { IUser } from '@models/UserModel';
 
 
 const useUser = (onError: () => void) => {
-    console.log("мама я в телике")
     const [user, setUser] = useState<IUser>(null);
 
     const fetchData = useCallback(async () => {
-        console.log("жопа")
         try {
-            console.log("а я тут")
             const { data, status } = await fetchUser();
             if (status === 403) {
                 onError();

@@ -5,8 +5,8 @@ from .views import (RegisterAPIView, LoginAPIView, UserAPIView, RefreshAPIView, 
                     PostGeoObjectAPIView, GetGeoObjectAPIView)
 
 urlpatterns = [
-    path('save_geojson', PostGeoObjectAPIView.as_view(), name='save_geojson'),
-    path('get_geojson', GetGeoObjectAPIView.as_view(), name='get_geojson'),
+    path('save_geo_object', PostGeoObjectAPIView.as_view(), name='save_geojson'),
+    path('get_geo_object/<int:geo_object_id>', GetGeoObjectAPIView.as_view(), name='get_geojson'),
     path('register', RegisterAPIView.as_view(), name='register'),
     path('login', LoginAPIView.as_view(), name='login'),
     path('user', UserAPIView.as_view(), name='user'),
