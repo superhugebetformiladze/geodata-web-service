@@ -4,7 +4,7 @@ import ProjectInfo from '@components/projects/ProjectInfo';
 import useProject from '@hooks/Project/useProject';
 import ProjectMap from '@components/Draw/ProjectMap';
 import { deleteProject } from '@api/projects/deleteProject';
-import { saveProjectChanges } from '@api/projects/saveProjectChanges';
+import { saveGeoObject } from '@api/geoObject/saveGeoObject';
 
 
 const ProjectInfoPage: React.FC = () => {
@@ -15,6 +15,7 @@ const ProjectInfoPage: React.FC = () => {
         setNavigate(true);
     }
     const project = useProject(Number(projectId), onError);
+    const [geoObjectData, setGeoObjectData] = useState();
 
     const handleDelete = async () => {
         try {
@@ -25,24 +26,30 @@ const ProjectInfoPage: React.FC = () => {
 
         setNavigate(true);
     };
-    
+
     const handleSaveProject = async () => {
         try {
-            await saveProjectChanges(Number(projectId), project);
+            if (project && geoObjectData) {
+                const geoObjectId = project.geo_object;
+
+                console.log("данные со страницы: ", geoObjectId, geoObjectData)
+
+                await saveGeoObject(geoObjectId, geoObjectData);
+            } else {
+                console.error('Project or geoJsonData is missing.');
+            }
 
         } catch (error) {
             console.error('Error saving project:', error);
         }
-
-        setNavigate(true);
     };
 
     const handleGeoJsonData = (geoJsonData: any) => {
-        console.log('Данные с карты в компоненте страницы: ', geoJsonData);
+        setGeoObjectData(geoJsonData);
     };
 
     if (navigate) {
-        return <Navigate to="/projects"/>;
+        return <Navigate to="/projects" />;
     }
 
     return (
@@ -64,16 +71,16 @@ const ProjectInfoPage: React.FC = () => {
                     Изменить
                 </Link>
                 <button
-                    onClick={handleDelete}
-                    className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-red-300 inline-block mx-auto mr-2"
-                >
-                    Удалить проект
-                </button>
-                <button
                     onClick={handleSaveProject}
-                    className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-red-300 inline-block mx-auto"
+                    className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-red-300 inline-block mx-auto mr-2"
                 >
                     Сохранить изменения
+                </button>
+                <button
+                    onClick={handleDelete}
+                    className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-red-300 inline-block mx-auto"
+                >
+                    Удалить проект
                 </button>
             </div>
         </div>

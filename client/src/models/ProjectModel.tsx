@@ -4,4 +4,5 @@ export interface IProject {
     description: string;
     created_at: Date;
     status: string;
+    geo_object: number;
 }

@@ -1,12 +1,16 @@
 import axios from 'axios';
 
 
-export const saveGeoJSON  = async (geoJSONData: any) => {
-    try {
-        const response = await axios.post('save_geojson/', geoJSONData);
-        console.log(response.data);
-      } catch (error) {
-        console.error('Error saving GeoJSON:', error);
-        alert('Ошибка сохранения');
-      }
+export const saveGeoObject = async (geoObjectId: number, geoObjectData: any) => {
+  try {
+    const requestData = {
+      id: geoObjectId,
+      geo_data: geoObjectData
+    };
+    console.log("данные в запросе: ", requestData)
+    const response = await axios.put('save_geojson', requestData);
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error saving GeoObject:', error);
+  }
 };

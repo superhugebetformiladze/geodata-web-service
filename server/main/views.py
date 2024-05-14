@@ -1,4 +1,3 @@
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException, AuthenticationFailed, NotFound
@@ -76,25 +75,6 @@ class LogoutAPIView(APIView):
         return response
 
 
-@api_view(['POST'])
-def save_geojson(request):
-    if request.method == 'POST':
-        serializer = GeoObjectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'GeoJSON data saved successfully.'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    return Response({'error': 'Invalid request method.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-@api_view(['GET'])
-def get_geojson(request):
-    if request.method == 'GET':
-        geo_objects = GeoObject.objects.all()
-        serializer = GeoObjectSerializer(geo_objects, many=True)
-        return Response(serializer.data)
-    return Response({'error': 'Invalid request method.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-
 class UserProjectsAPIView(APIView):
     def get(self, request):
         auth = get_authorization_header(request).split()
@@ -117,15 +97,14 @@ class CreateProjectAPIView(APIView):
             token = auth[1].decode('utf-8')
             user_id = decode_access_token(token)
 
-            request.data['user'] = user_id  # добавляем идентификатор пользователя к данным проекта
+            request.data['user'] = user_id
 
             # Создание пустого гео-объекта
             geo_object = GeoObject.objects.create(object_data={})
             request.data['geo_object'] = geo_object.id
 
             serializer = ProjectSerializer(data=request.data)
-            print("\n\ndata:\n", request.data, "\n\n")
-            print("\n\nserializer:\n", serializer, "\n\n")
+
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=201)
@@ -165,17 +144,12 @@ class ProjectDetailAPIView(APIView):
             project = self.get_object(project_id, user_id)
 
             geo_object_id = project.geo_object.id
-            print("\nproject.geo_object:\n", project.geo_object.id, "\n\n")
-            print("\nproject.pk:\n", project.pk, "\n\n")
-            print("\nproject.user:\n", project.user, "\n\n")
-            print("\nproject.name:\n", project.name, "\n\n")
 
             request.data['user'] = user_id
             request.data['geo_object'] = geo_object_id
 
             serializer = ProjectSerializer(project, data=request.data)
-            print("\n\nuser:\n", user_id, "\n\n")
-            print("\n\nserializer data:\n", serializer, "\n\n")
+
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -197,4 +171,62 @@ class ProjectDetailAPIView(APIView):
                 geo_object.delete()
             project.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        raise AuthenticationFailed('unauthenticated')
+    
+
+class PostGeoObjectAPIView(APIView):
+    def put(self, request):
+        auth = get_authorization_header(request).split()
+
+        if auth and len(auth) == 2:
+
+            geo_id = request.data.get('id')
+            geo_data = request.data.get('geo_data')
+
+            try:
+                geo_object = GeoObject.objects.get(id=geo_id)
+            except GeoObject.DoesNotExist:
+                return Response({'error': 'GeoObject not found'}, status=404)
+
+            geo_object_data = {
+                'id': geo_id,
+                'object_data': geo_data
+            }
+
+            serializer = GeoObjectSerializer(geo_object, data=geo_object_data)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=201)
+            else:
+                print("\n\nserializer errors:\n", serializer.errors, "\n\n")
+                return Response(serializer.errors, status=400)
+
+        raise AuthenticationFailed('unauthenticated')
+    
+class GetGeoObjectAPIView(APIView):
+    def get(self, request):
+        auth = get_authorization_header(request).split()
+
+        if auth and len(auth) == 2:
+
+            geo_id = request.data.get('id')
+
+            try:
+                geo_object = GeoObject.objects.get(id=geo_id)
+            except GeoObject.DoesNotExist:
+                return Response({'error': 'GeoObject not found'}, status=404)
+
+            print("\n\nrequest data:\n", request.data, "\n\n")
+
+            serializer = GeoObjectSerializer(geo_object)
+    
+            print("\n\nserializer:\n", serializer, "\n\n")
+            
+            if serializer.is_valid():
+                return Response(serializer.data, status=201)
+            else:
+                print("\n\nserializer errors:\n", serializer.errors, "\n\n")
+                return Response(serializer.errors, status=400)
+
         raise AuthenticationFailed('unauthenticated')

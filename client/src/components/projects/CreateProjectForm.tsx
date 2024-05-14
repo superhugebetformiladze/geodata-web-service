@@ -12,6 +12,7 @@ const CreateProjectForm = () => {
         description: '',
         status: '',
         created_at: new Date(),
+        geo_object: 0,
     });
     const [navigate, setNavigate] = useState(false);
 

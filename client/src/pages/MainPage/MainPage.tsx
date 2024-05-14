@@ -1,12 +1,12 @@
 import React from 'react';
-import Example2 from '@components/example/Example2';
+import MainComponent from '@components/common/MainComponent';
 
 
-const MapPage = () => {
+const MainPage = () => {
 
     return (
-        <Example2 />
+        <MainComponent />
     )
 }
 
-export default MapPage;
+export default MainPage;
