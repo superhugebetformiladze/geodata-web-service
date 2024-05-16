@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin')
 
 require('dotenv').config();
 
@@ -38,6 +39,11 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'src/insertionScript/ex.tsx', to: 'map.js' },
+      ],
     }),
   ],
 };

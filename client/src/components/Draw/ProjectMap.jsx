@@ -1,14 +1,11 @@
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef, useEffect } from "react";
-import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
+import { MapContainer, TileLayer, FeatureGroup, GeoJSON } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import L from "leaflet";
 
-const ProjectMap = ({ onGeoJsonData }) => {
+const ProjectMap = ({ onGeoJsonData, geoObjectDB }) => {
     const center = { lat: 54.35135425936058, lng: 48.38624596595764 };
     const [mapLayers, setMapLayers] = useState([]);
-    const [geoJsonData, setGeoJsonData] = useState(null);
     const mapRef = useRef();
     const drawnItemsRef = useRef();
 
@@ -58,6 +55,7 @@ const ProjectMap = ({ onGeoJsonData }) => {
         });
     };
 
+    // Функция для обновления GeoJSON данных
     const updateGeoJsonData = () => {
         const geojson = {
             type: 'FeatureCollection',
@@ -73,6 +71,22 @@ const ProjectMap = ({ onGeoJsonData }) => {
         onGeoJsonData(geojson);
     };
 
+    // Обновление состояния mapLayers при изменении geoObject
+    useEffect(() => {
+        if (geoObjectDB) {
+            const objectData = geoObjectDB.object_data
+            console.log("данные: ", objectData)
+            setMapLayers(objectData.features.map(feature => ({
+                id: Math.random(), // Генерируем случайный id
+                latlngs: feature.geometry.coordinates[0].map(coord => ({
+                    lat: coord[1],
+                    lng: coord[0]
+                }))
+            })));
+        }
+    }, [geoObjectDB]);
+
+    // Вызов функции обновления GeoJSON данных при изменении mapLayers
     useEffect(() => {
         updateGeoJsonData();
     }, [mapLayers]);
@@ -103,6 +117,11 @@ const ProjectMap = ({ onGeoJsonData }) => {
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution="&copy; <a href=&quot;http://osm.org/>copyright&quot;>OpenStreetMap</a> contributors"
                         />
+
+                        {/* Отображение объектов из geoObject */}
+                        {geoObjectDB && (
+                            <GeoJSON data={geoObjectDB.object_data} />
+                        )}
 
                     </MapContainer>
                 </div>

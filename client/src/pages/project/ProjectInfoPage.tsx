@@ -17,9 +17,6 @@ const ProjectInfoPage: React.FC = () => {
 
     const { project, geoObject } = useProject(Number(projectId), onError);
 
-    console.log("project: ", project)
-    console.log("geoObject: ", geoObject)
-
     const [geoObjectData, setGeoObjectData] = useState();
 
     const handleGeoJsonData = (geoJsonData: any) => {
@@ -65,7 +62,7 @@ const ProjectInfoPage: React.FC = () => {
                 </div>
             )}
             <div className='mb-6'>
-                <ProjectMap onGeoJsonData={handleGeoJsonData} />
+                <ProjectMap onGeoJsonData={handleGeoJsonData} geoObjectDB={geoObject} />
             </div>
 
             <div className="text-center">
