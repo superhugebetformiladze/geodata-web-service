@@ -2,14 +2,22 @@
 const scriptUrl = new URL(document.currentScript.src);
 const params = new URLSearchParams(scriptUrl.search);
 const id = params.get('id');
+let width = params.get('width');
+let height = params.get('height');
 
-// Теперь переменная id содержит значение параметра id из URL скрипта
+// Устанавливаем значения по умолчанию, если параметры не переданы
+if (!width) {
+    width = '600'; // значение по умолчанию для ширины
+}
+if (!height) {
+    height = '400'; // значение по умолчанию для высоты
+}
 
-// Создаем элемент div для карты
+// Создаем элемент div для карты и устанавливаем ширину и высоту из параметров URL
 const mapDiv = document.createElement('div');
 mapDiv.id = 'map';
-mapDiv.style.width = '600px';
-mapDiv.style.height = '400px';
+mapDiv.style.width = width + 'px'; // Используем значение width из URL или значение по умолчанию
+mapDiv.style.height = height + 'px'; // Используем значение height из URL или значение по умолчанию
 document.body.appendChild(mapDiv);
 
 // Добавляем элемент link для загрузки CSS Leaflet через CDN

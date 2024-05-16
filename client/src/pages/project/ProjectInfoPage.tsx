@@ -50,7 +50,7 @@ const ProjectInfoPage: React.FC = () => {
 
     const generateEmbedCode = () => {
         if (geoObject) {
-            return `<script src="http://localhost:3000/map.js?id=${geoObject.id}"></script>`;
+            return `<script src="http://localhost:3000/map.js?id=${geoObject.id}&width=1000&height=500"></script>`;
         } else {
             return 'Выберите геообъект';
         }
