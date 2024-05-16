@@ -223,3 +223,15 @@ class GetGeoObjectAPIView(APIView):
             print("\n\nserializer:\n", serializer.data, "\n\n")
             return Response(serializer.data)
         raise AuthenticationFailed('unauthenticated')
+    
+class GetGeoObjectForScriptAPIView(APIView):
+    def get_object(self, geo_object_id):
+        try:
+            return GeoObject.objects.get(pk=geo_object_id)
+        except GeoObject.DoesNotExist:
+            raise NotFound('GeoObject not found')
+        
+    def get(self, request, geo_object_id):
+        geo_object = self.get_object(geo_object_id)
+        print("\n\ngeo_object script:\n", geo_object.object_data, "\n\n")
+        return Response(geo_object.object_data)

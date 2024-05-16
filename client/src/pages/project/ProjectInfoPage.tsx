@@ -48,6 +48,19 @@ const ProjectInfoPage: React.FC = () => {
         }
     };
 
+    const generateEmbedCode = () => {
+        if (geoObject) {
+            return `<script src="http://localhost:3000/map.js?id=${geoObject.id}"></script>`;
+        } else {
+            return 'Выберите геообъект';
+        }
+    };
+
+    const handleGetEmbedCode = () => {
+        const embedCode = generateEmbedCode();
+        console.log(embedCode);
+    };
+
 
 
     if (navigate) {
@@ -84,6 +97,12 @@ const ProjectInfoPage: React.FC = () => {
                 >
                     Удалить проект
                 </button>
+                <div className="mt-4">
+                    <input type="text" value={generateEmbedCode()} readOnly className="border border-gray-300 px-2 py-1 rounded-md mr-2" style={{ width: '300px' }} />
+                    <button onClick={handleGetEmbedCode} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300 inline-block">
+                        Получить код для вставки
+                    </button>
+                </div>
             </div>
         </div>
     );

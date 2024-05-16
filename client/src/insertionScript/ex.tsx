@@ -1,3 +1,10 @@
+// Получаем параметры из URL скрипта
+const scriptUrl = new URL(document.currentScript.src);
+const params = new URLSearchParams(scriptUrl.search);
+const id = params.get('id');
+
+// Теперь переменная id содержит значение параметра id из URL скрипта
+
 // Создаем элемент div для карты
 const mapDiv = document.createElement('div');
 mapDiv.id = 'map';
@@ -27,89 +34,20 @@ function initializeMap() {
     // Добавляем слой с тайлами OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    // Создаем данные GeoJSON
-    const geoData = {
-        "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [
-                            [
-                                48.353883881059815,
-                                54.3605384753845
-                            ],
-                            [
-                                48.37928971702041,
-                                54.32450466662607
-                            ],
-                            [
-                                48.30993865129015,
-                                54.34592857149444
-                            ]
-                        ]
-                    ]
-                },
-                "properties": {}
-            },
-            {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [
-                            [
-                                48.3817897141925,
-                                54.36404699238329
-                            ],
-                            [
-                                48.39154816302009,
-                                54.34537317526755
-                            ],
-                            [
-                                48.36867680774138,
-                                54.34572894503321
-                            ],
-                            [
-                                48.360748065451546,
-                                54.38289005938979
-                            ]
-                        ]
-                    ]
-                },
-                "properties": {}
-            },
-            {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [
-                            [
-                                48.311311939720454,
-                                54.37154250623618
-                            ],
-                            [
-                                48.27560644053259,
-                                54.347730073265154
-                            ],
-                            [
-                                48.229601278117435,
-                                54.3621392449242
-                            ]
-                        ]
-                    ]
-                },
-                "properties": {}
-            }
-        ]
-    };
-
-
-    // Добавляем объекты GeoJSON на карту
-    L.geoJSON(geoData).addTo(map);
+    fetch('http://localhost:8000/api/get_geo_object_script/' + id)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Добавляем объекты GeoJSON на карту
+        L.geoJSON(data).addTo(map);
+    })
+    .catch(error => {
+        console.error('Error loading GeoJSON:', error);
+    });
 
     const attributionControl = document.querySelector('.leaflet-control-attribution');
     if (attributionControl) {
