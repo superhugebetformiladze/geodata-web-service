@@ -8,8 +8,9 @@ import RegisterPage from '@pages/auth/RegisterPage';
 import ProfilePage from '@pages/user/ProfilePage';
 import ProjectPage from '@pages/project/ProjectsPage';
 import CreateProjectPage from '@pages/project/CreateProjectPage';
-import ProjectInfoPage from '@pages/project/ProjectInfoPage';
+// import ProjectInfoPage from '@pages/project/ProjectInfoPage';
 import EditProjectPage from '@pages/project/EditProjectPage';
+import ProjectInfoPage from '@pages/project/example';
 
 function App() {
   return (
