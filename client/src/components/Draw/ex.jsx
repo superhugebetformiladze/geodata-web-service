@@ -3,10 +3,9 @@ import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import L from "leaflet";
 
-const ProjectMap = ({ geoObjectDB }) => {
+const ProjectMap = ({ onGeoJsonData, geoObjectDB }) => {
     const center = { lat: 54.35135425936058, lng: 48.38624596595764 };
     const [mapLayers, setMapLayers] = useState([]);
-    const mapRef = useRef();
     const drawnItemsRef = useRef();
 
     const ZOOM_LEVEL = 12;
@@ -49,19 +48,24 @@ const ProjectMap = ({ geoObjectDB }) => {
         });
     };
 
+    const updateGeoJsonData = () => {
+        if (drawnItemsRef.current) {
+            const geojson = drawnItemsRef.current.toGeoJSON();
+            onGeoJsonData(geojson);
+        }
+    };
+
     useEffect(() => {
         if (geoObjectDB && geoObjectDB.object_data && Array.isArray(geoObjectDB.object_data.features)) {
             const objectData = geoObjectDB.object_data;
             const newLayers = objectData.features.map((feature, index) => ({
-                id: `db_${index}`, // Присваивание уникального id
+                id: `db_${index}`,
                 latlngs: feature.geometry.coordinates[0].map(coord => ({
                     lat: coord[1],
                     lng: coord[0]
                 }))
             }));
-            console.log("newLayers", newLayers);
 
-            // Add polygons to the map
             newLayers.forEach(layer => {
                 const polygon = L.polygon(layer.latlngs);
                 drawnItemsRef.current.addLayer(polygon);
@@ -69,10 +73,14 @@ const ProjectMap = ({ geoObjectDB }) => {
         }
     }, [geoObjectDB]);
 
+    useEffect(() => {
+        updateGeoJsonData();
+    }, [mapLayers]);
+
     return (
         <div className="row">
             <div className="col">
-                <MapContainer center={center} zoom={ZOOM_LEVEL} ref={mapRef} style={mapStyle} attributionControl={false}>
+                <MapContainer center={center} zoom={ZOOM_LEVEL} style={mapStyle} attributionControl={false}>
                     <FeatureGroup ref={drawnItemsRef}>
                         <EditControl
                             position="topright"
