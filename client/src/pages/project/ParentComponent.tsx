@@ -5,7 +5,7 @@ import useProject from '@hooks/Project/useProject';
 // import ProjectMap from '@components/Draw/ProjectMap';
 import { deleteProject } from '@api/projects/deleteProject';
 import { saveGeoObject } from '@api/geoObject/saveGeoObject';
-import ProjectMap from '@components/Draw/ex';
+import ProjectMap from '@components/Draw/Example';
 
 
 const ProjectInfoPage: React.FC = () => {
