@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import ProjectInfo from '@components/projects/ProjectInfo';
 import useProject from '@hooks/Project/useProject';
-import ProjectMap from '@components/Draw/ProjectMap';
+import ProjectMap from '@components/Draw/Example';
 import { deleteProject } from '@api/projects/deleteProject';
 import { saveGeoObject } from '@api/geoObject/saveGeoObject';
 import { GeoJsonObject } from 'geojson';
+import Draw from '@components/Draw/Draw';
 
 const ProjectInfoPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -87,7 +88,8 @@ const ProjectInfoPage: React.FC = () => {
         </div>
       )}
       <div className='mb-6'>
-        <ProjectMap onGeoJsonData={handleGeoJsonData} geoObjectDB={geoObject} />
+        <ProjectMap geoObjectDB={geoObject} />
+        {/* <Draw /> */}
       </div>
 
       <div className="text-center">
