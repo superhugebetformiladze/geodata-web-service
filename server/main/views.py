@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException, AuthenticationFailed, NotFound
@@ -235,3 +236,42 @@ class GetGeoObjectForScriptAPIView(APIView):
         geo_object = self.get_object(geo_object_id)
         print("\n\ngeo_object script:\n", geo_object.object_data, "\n\n")
         return Response(geo_object.object_data)
+
+
+class CreateGeoObjectAPIView(APIView):
+    def post(self, request):
+        geojson_data = request.data
+        geo_object = GeoObject.objects.create(object_data=geojson_data)
+
+        serializer = GeoObjectSerializer(geo_object)
+
+        response_script = f'<script src="http://localhost:3000/map.js?id={geo_object.id}"></script>'
+
+        return HttpResponse(response_script, content_type="text/html", status=status.HTTP_201_CREATED)
+    
+class EditGeoObjectAPIView(APIView):
+    def put(self, request, geo_object_id):
+        new_geojson_data = request.data
+
+        try:
+            geo_object = GeoObject.objects.get(pk=geo_object_id)
+        except GeoObject.DoesNotExist:
+            raise NotFound('GeoObject not found')
+
+        geo_object.object_data = new_geojson_data
+        geo_object.save()
+
+        response_script = f'<script src="http://localhost:3000/map.js?id={geo_object.id}"></script>'
+
+        return HttpResponse(response_script, content_type="text/html", status=status.HTTP_200_OK)
+    
+class DeleteGeoObjectAPIView(APIView):
+    def delete(self, request, geo_object_id):
+        try:
+            geo_object = GeoObject.objects.get(pk=geo_object_id)
+        except GeoObject.DoesNotExist:
+            raise NotFound('GeoObject not found')
+
+        geo_object.delete()
+
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)

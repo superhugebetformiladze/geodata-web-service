@@ -2,7 +2,8 @@ from django.urls import path
 from . import views
 from .views import (RegisterAPIView, LoginAPIView, UserAPIView, RefreshAPIView, LogoutAPIView, 
                     CreateProjectAPIView, UserProjectsAPIView, ProjectDetailAPIView, 
-                    PostGeoObjectAPIView, GetGeoObjectAPIView, GetGeoObjectForScriptAPIView)
+                    PostGeoObjectAPIView, GetGeoObjectAPIView, GetGeoObjectForScriptAPIView,
+                    CreateGeoObjectAPIView, EditGeoObjectAPIView, DeleteGeoObjectAPIView)
 
 urlpatterns = [
     path('save_geo_object', PostGeoObjectAPIView.as_view(), name='save_geojson'),
@@ -16,4 +17,7 @@ urlpatterns = [
     path('projects', UserProjectsAPIView.as_view(), name='projects'),
     path('projects/<int:project_id>', ProjectDetailAPIView.as_view(), name='project_detail'),
     path('get_geo_object_script/<int:geo_object_id>', GetGeoObjectForScriptAPIView.as_view(), name='get_geojson_script'),
+    path('create-geoobject', CreateGeoObjectAPIView.as_view(), name='create-geoobject'),
+    path('edit-geoobject/<int:geo_object_id>', EditGeoObjectAPIView.as_view(), name='edit-geoobject'),
+    path('delete-geoobject/<int:geo_object_id>', DeleteGeoObjectAPIView.as_view(), name='delete-geoobject'),
 ]

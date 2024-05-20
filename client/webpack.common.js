@@ -42,7 +42,7 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [
-        { from: 'src/insertionScript/ex.jsx', to: 'map.js' },
+        { from: 'src/insertionScript/example.js', to: 'map.js' },
       ],
     }),
   ],

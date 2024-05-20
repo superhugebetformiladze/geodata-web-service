@@ -11,7 +11,7 @@ import CreateProjectPage from '@pages/project/CreateProjectPage';
 // import ProjectInfoPage from '@pages/project/ProjectInfoPage';
 import EditProjectPage from '@pages/project/EditProjectPage';
 // import ProjectInfoPage from '@pages/project/example';
-import ProjectInfoPage from '@pages/project/ParentComponent';
+import ProjectInfoPage from '@pages/project/exfromgit';
 
 function App() {
   return (
