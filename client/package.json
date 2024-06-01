@@ -47,6 +47,7 @@
     "@types/react-dom": "^18.2.18",
     "axios": "^1.6.5",
     "dotenv": "^16.4.1",
+    "heatmap.js": "^2.0.5",
     "husky": "^8.0.3",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",

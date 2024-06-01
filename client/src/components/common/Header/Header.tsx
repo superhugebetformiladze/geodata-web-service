@@ -84,6 +84,9 @@ const Header: React.FC = () => {
               <li className="text-gray-600 hover:text-blue-600">
                 <Link to={'/login'} onClick={closeNavbar}>Вход</Link>
               </li>
+              <li className="text-gray-600 hover:text-blue-600">
+                <Link to={'/clicks'} onClick={closeNavbar}>Тепловая карта</Link>
+              </li>
             </ul>
           </div>
         </div>

@@ -12,6 +12,7 @@ import CreateProjectPage from '@pages/project/CreateProjectPage';
 import EditProjectPage from '@pages/project/EditProjectPage';
 // import ProjectInfoPage from '@pages/project/example';
 import ProjectInfoPage from '@pages/project/exfromgit';
+import ClicksPage from '@test/ClicksPage';
 
 function App() {
   return (
@@ -81,6 +82,14 @@ function App() {
         element={
           <Layout>
             <EditProjectPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/clicks"
+        element={
+          <Layout>
+            <ClicksPage />
           </Layout>
         }
       />

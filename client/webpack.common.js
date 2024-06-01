@@ -33,6 +33,7 @@ module.exports = {
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@models': path.resolve(__dirname, './src/models'),
       '@pages': path.resolve(__dirname, './src/pages'),
+      '@test': path.resolve(__dirname, './src/test'),
     },
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
   },

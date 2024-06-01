@@ -41,7 +41,7 @@ function initializeMap() {
     // Подключаем библиотеку Leaflet
     const L = window.L;
 
-    let mapCenter = center ? center.split(',').map(Number) : [55.751244, 37.618423];
+    let mapCenter = center ? center.split(',').map(Number) : [54.35135425936058, 48.38624596595764];
 
     const map = L.map('map').setView(mapCenter, parseInt(zoom));
 
