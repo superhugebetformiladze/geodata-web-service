@@ -4,7 +4,7 @@ import { IUser } from '@models/UserModel';
 import {Navigate} from "react-router-dom";
 
 
-const LoginForm = () => {
+const LoginForm: React.FC = () => {
 
     const [formData, setFormData] = useState<IUser>({
         id: 0,
@@ -27,15 +27,15 @@ const LoginForm = () => {
 
         try {
             await loginUser(formData);
+            window.location.reload();
         } catch (error) {
             console.error('Error login:', error);
         }
-
-        setNavigate(true);
     };
 
+
     if (navigate) {
-        return <Navigate to="/profile"/>;
+        return <Navigate to="/projects"/>;
     }
 
     return (

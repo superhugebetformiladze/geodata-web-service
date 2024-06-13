@@ -85,14 +85,14 @@ function App() {
           </Layout>
         }
       />
-      <Route
+      {/* <Route
         path="/clicks"
         element={
           <Layout>
             <ClicksPage />
           </Layout>
         }
-      />
+      /> */}
     </Routes>
   );
 }

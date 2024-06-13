@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
+import useUser from '@hooks/User/useUser';
 
 const Header: React.FC = () => {
   const [navbar, setNavbar] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const closeNavbar = () => {
     setNavbar(false);
   };
+
+  const onError = () => {
+    console.error('Error fetching user');
+    setIsAuthenticated(false);
+  };
+
+  const user = useUser(onError);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -18,10 +27,16 @@ const Header: React.FC = () => {
 
     document.addEventListener("click", handleClickOutside);
 
+    if (user) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [user]);
 
   return (
     <nav id="navbar" className="w-full bg-white shadow">
@@ -81,12 +96,14 @@ const Header: React.FC = () => {
               <li className="text-gray-600 hover:text-blue-600">
                 <Link to={'/profile'} onClick={closeNavbar}>Профиль</Link>
               </li>
-              <li className="text-gray-600 hover:text-blue-600">
-                <Link to={'/login'} onClick={closeNavbar}>Вход</Link>
-              </li>
-              <li className="text-gray-600 hover:text-blue-600">
+              {!isAuthenticated && (
+                <li className="text-gray-600 hover:text-blue-600">
+                  <Link to={'/login'} onClick={closeNavbar}>Вход</Link>
+                </li>
+              )}
+              {/* <li className="text-gray-600 hover:text-blue-600">
                 <Link to={'/clicks'} onClick={closeNavbar}>Тепловая карта</Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
